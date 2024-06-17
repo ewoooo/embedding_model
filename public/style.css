@@ -31,11 +31,18 @@ p {
 	padding: 0;
 }
 
+ul,
+li,
+a {
+	list-style: none;
+	text-decoration: none;
+	color: inherit;
+}
+
 /* Variable */
 :root {
 	--radius-l: 28px;
 	--gap: 10px;
-
 	--layer-bg: #0f0e0e;
 	--layer-1: #3b3b3b;
 	--layer-2: #d9c3b0;
@@ -122,4 +129,28 @@ h1 {
 
 .caption {
 	color: var(--layer-2);
+}
+
+/* Header */
+header {
+	display: flex;
+	width: 100%;
+	height: 64px;
+	align-items: center;
+	background-color: var(--layer-1);
+	margin-bottom: 100px;
+	& ul {
+		display: flex;
+		gap: 20px;
+		margin: 0 auto;
+	}
+	& li {
+		padding: 8px 12px;
+		border-radius: var(--radius-l);
+		background-color: var(--layer-2);
+		transition: background 200ms ease;
+		&:hover {
+			background-color: var(--layer-3);
+		}
+	}
 }

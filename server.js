@@ -49,9 +49,19 @@ app.get("/", function (req, res) {
 	res.sendFile(__dirname + "/view/index.html");
 });
 
-// 임베딩 테스트
-app.get("/result", function (req, res) {
-	res.sendFile(__dirname + "/view/result.html");
+// 테스트 페이지
+app.get("/chat", function (req, res) {
+	res.sendFile(__dirname + "/view/chat.html");
+});
+
+// 임베딩 생성 페이지
+app.get("/create", function (req, res) {
+	res.sendFile(__dirname + "/view/create.html");
+});
+
+// 유사도 확인 페이지
+app.get("/examine", function (req, res) {
+	res.sendFile(__dirname + "/view/examine.html");
 });
 
 // GPT CHAT 응답 핸들러
