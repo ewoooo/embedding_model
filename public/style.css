@@ -1,0 +1,125 @@
+body,
+html {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	min-width: 380px;
+}
+
+body {
+	font-family: "Wanted Sans";
+	background-color: var(--layer-bg);
+}
+
+*,
+*::after,
+*::before {
+	box-sizing: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+textarea,
+input,
+span,
+p {
+	margin: 0;
+	padding: 0;
+}
+
+/* Variable */
+:root {
+	--radius-l: 28px;
+	--gap: 10px;
+
+	--layer-bg: #0f0e0e;
+	--layer-1: #3b3b3b;
+	--layer-2: #d9c3b0;
+	--layer-3: #cc6324;
+}
+
+/* Layout */
+div[class*="wrapper"] {
+	max-width: 720px;
+	min-width: 380px;
+	gap: 10px;
+	display: flex;
+	padding: 36px;
+	margin: 10px auto;
+	border-radius: var(--radius-l);
+}
+
+.index-wrapper {
+	background-color: var(--layer-1);
+	& .index-title {
+		flex: 2;
+	}
+}
+
+.content-wrapper {
+	background-color: var(--layer-1);
+	flex-flow: column nowrap;
+	gap: 10px;
+	padding: 24px !important;
+}
+
+.input-wrapper {
+	background-color: var(--layer-1);
+	gap: 10px;
+	padding: 12px !important;
+}
+
+/* MESSAGE */
+.message {
+	padding: 12px 24px;
+	border-radius: 18px;
+}
+
+.res {
+	background-color: rgb(232, 232, 232);
+	position: relative;
+	align-self: flex-start;
+	user-select: none;
+	transition: all 0.2s ease;
+	transform: translateY(0);
+	&:hover {
+		background-color: aliceblue;
+		transform: translateY(-5px);
+	}
+}
+
+.req {
+	background-color: beige;
+	align-self: flex-end;
+}
+
+/* CONTENT-INPUT */
+#req-message {
+	flex: 1;
+	border: none;
+	padding: 16px;
+	border-radius: 16px;
+	background-color: rgba(255, 254, 240, 0.3);
+}
+
+#req-button {
+	border: none;
+	padding: 16px;
+	border-radius: 16px;
+	cursor: pointer;
+	background-color: var(--layer-3);
+}
+
+/* Typography */
+h1 {
+	font-size: 32px;
+	color: var(--layer-3);
+}
+
+.caption {
+	color: var(--layer-2);
+}
