@@ -78,44 +78,39 @@ app.post("/gpt", async (req, res) => {
 	}
 });
 
-// // Endpoint
-// app.post("/query", async (req, res) => {
-// 	const message = req.body.detail; // 클라이언트 쿼리
-// 	console.log("서버 전달 데이터", message); // 서버 전달 확인 디버깅 로그
-
-// 	const result = await openai.embeddings.create({
-// 		model: "text-embedding-3-small",
-// 		input: message,
-// 		encoding_format: "float",
-// 	});
-
-// 	let respond = { object: message, embedding: result.data[0].embedding };
-// 	await console.log("임베딩이 완료되었습니다:", respond.object); // 수신 확인 디버깅 로그
-// 	res.json(result.object);
-// });
-
-// 임베딩 테스트
-app.get("/add", async (req, res) => {
-	const userInput = "코끼리";
-	let result = await axios.post(
-		"https://api.openai.com/v1/embeddings",
-		{
-			input: userInput,
-			model: "text-embedding-3-small",
-		},
-		{
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: "Bearer " + process.env.OPENAI_API_KEY,
+// 임베딩 제작
+app.post("/request", async (req, res) => {
+	try {
+		const userInput = req.body.target;
+		let result = await axios.post(
+			"https://api.openai.com/v1/embeddings",
+			{
+				input: userInput,
+				model: "text-embedding-3-small",
 			},
-		}
-	);
-	let force = "INSERT INTO items (title, embedding) VALUES($1, $2)";
-	let value = [userInput, pgvector.toSql(result.data.data[0].embedding)];
-	await client.query(force, value);
-	console.log("임베딩 타겟", userInput);
-	console.log(result.data.data[0].embedding);
-	res.send("test");
+			{
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + process.env.OPENAI_API_KEY,
+				},
+			}
+		);
+
+		// items 테이블에 결과값 삽입
+		let force = "INSERT INTO items (title, embedding) VALUES($1, $2)";
+		let value = [userInput, pgvector.toSql(result.data.data[0].embedding)];
+		await client.query(force, value);
+		console.log("임베딩 타겟", userInput);
+
+		// 데이터베이스에서 임베딩 열을 제외한 모든 항목 찾기
+		const query = "SELECT title FROM items";
+		const resultList = await client.query(query);
+
+		// 조회한 데이터를 클라이언트로 전송
+		res.send(resultList.rows);
+	} catch (error) {
+		console.error("Error Occured");
+	}
 });
 
 // 임베딩 비교

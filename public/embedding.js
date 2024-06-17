@@ -23,26 +23,26 @@ function renderMessages() {
 	console.table(log);
 }
 
+renderMessages();
+
 // 임베딩 쿼리 기능
 async function embeddingQuery(queryText) {
-	let requestPayload = { item: "queryText", detail: queryText };
-	const response = await fetch("/query", {
+	let requestPayload = { action: "createEmbedding", target: queryText };
+	const response = await fetch("/request", {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify(requestPayload),
 	});
-	const responseData = await response.json(); // 임베딩 데이터 수신
-	// const embeddingResult = responseData.data[0].embedding; // 임베딩 데이터 전처리
-	console.log("임베딩 결과", responseData); // 로그에 입력
-	renderMessages(); // 화면 새로고침
+	const serverData = await response.json(); // 임베딩 데이터 수신
+	console.log("임베딩 결과"); // 로그에 입력
+	console.table(serverData); // 로그에 입력
 }
-
-renderMessages();
 
 submit.addEventListener("click", function () {
 	let value = message.value;
-	console.log("쿼리 데이터", value);
+	console.log("쿼리 데이터: ", value);
 	embeddingQuery(value);
+	value = "";
 });
