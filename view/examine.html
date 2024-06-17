@@ -22,9 +22,14 @@
 		</header>
 		<div class="content-wrapper"></div>
 		<div class="input-wrapper">
-			<input type="text" name="message" id="req-message" placeholder="메세지 작성하기" />
+			<input type="text" name="title" id="req-title" placeholder="비교할 대상 작성하기" />
+			<select name="event" id="req-selection">
+				<option value="event1" selected>Event 1</option>
+				<option value="event2">Event 2</option>
+				<option value="event3">Event 3</option>
+			</select>
 			<button id="req-button">유사도 확인하기</button>
 		</div>
-		<script src="embedding.js"></script>
+		<script src="examine.js"></script>
 	</body>
 </html>

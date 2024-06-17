@@ -88,14 +88,16 @@ app.post("/gpt", async (req, res) => {
 	}
 });
 
-// 임베딩 제작
+// 임베딩 만들기 요청
 app.post("/request", async (req, res) => {
 	try {
-		const userInput = req.body.target;
+		const title = req.body.title;
+		const event = req.body.event;
+		const prompt = req.body.prompt;
 		let result = await axios.post(
 			"https://api.openai.com/v1/embeddings",
 			{
-				input: userInput,
+				input: title,
 				model: "text-embedding-3-small",
 			},
 			{
@@ -107,28 +109,30 @@ app.post("/request", async (req, res) => {
 		);
 
 		// items 테이블에 결과값 삽입
-		let force = "INSERT INTO items (title, embedding) VALUES($1, $2)";
-		let value = [userInput, pgvector.toSql(result.data.data[0].embedding)];
-		await client.query(force, value);
-		console.log("임베딩 타겟", userInput);
+		let command = "INSERT INTO items (title, embedding, event, prompt) VALUES($1, $2, $3, $4)";
+		let value = [title, pgvector.toSql(result.data.data[0].embedding), event, prompt];
+		await client.query(command, value);
+		console.log("임베딩 타겟", title);
 
 		// 데이터베이스에서 임베딩 열을 제외한 모든 항목 찾기
-		const query = "SELECT title FROM items";
+		const query = "SELECT title, event, prompt FROM items";
 		const resultList = await client.query(query);
 
 		// 조회한 데이터를 클라이언트로 전송
 		res.send(resultList.rows);
 	} catch (error) {
-		console.error("Error Occured");
+		console.error("Error Occurred");
 	}
 });
 
-// 임베딩 비교
-app.get("/compare", async (req, res) => {
+// 임베딩 비교 요청
+app.post("/compare", async (req, res) => {
+	const target = req.body.title;
+	const targetEvent = req.body.event;
 	let result = await axios.post(
 		"https://api.openai.com/v1/embeddings",
 		{
-			input: req.query.q,
+			input: target,
 			model: "text-embedding-3-small",
 		},
 		{
@@ -138,8 +142,15 @@ app.get("/compare", async (req, res) => {
 			},
 		}
 	);
-	let force = `SELECT id, title, 1 - (embedding <=> $1) as similarity FROM items`;
-	let value = [pgvector.toSql(result.data.data[0].embedding)];
-	let rank = await client.query(force, value);
-	res.send(rank.rows);
+	let command = `SELECT id, title, 1 - (embedding <=> $1) as similarity FROM items WHERE event = $2`;
+	let value = [pgvector.toSql(result.data.data[0].embedding), targetEvent];
+	let rankList = await client.query(command, value);
+	res.send(rankList.rows);
+});
+
+//임베딩 불러오기
+app.get("/table", async (req, res) => {
+	const loadTable = `SELECT title, event, prompt FROM items`;
+	const result = await client.query(loadTable);
+	res.send(result.rows);
 });

@@ -20,9 +20,15 @@
 				</li>
 			</ul>
 		</header>
-		<div class="content-wrapper"></div>
+		<div class="table-wrapper"></div>
 		<div class="input-wrapper">
-			<input type="text" name="message" id="req-message" placeholder="메세지 작성하기" />
+			<input type="text" name="message" id="req-title" placeholder="제목은 무엇인가요?" />
+			<input type="text" name="message" id="req-prompt" placeholder="프롬프트는 무엇인가요?" />
+			<select name="section" id="req-selection">
+				<option value="event1" selected>Event 1</option>
+				<option value="event2">Event 2</option>
+				<option value="event3">Event 3</option>
+			</select>
 			<button id="req-button">임베딩 생성하기</button>
 		</div>
 		<script src="embedding.js"></script>
