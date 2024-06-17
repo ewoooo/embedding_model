@@ -78,25 +78,25 @@ app.post("/gpt", async (req, res) => {
 	}
 });
 
-// Endpoint
-app.post("/query", async (req, res) => {
-	const message = req.body.detail; // 클라이언트 쿼리
-	console.log("서버 전달 데이터", message); // 서버 전달 확인 디버깅 로그
+// // Endpoint
+// app.post("/query", async (req, res) => {
+// 	const message = req.body.detail; // 클라이언트 쿼리
+// 	console.log("서버 전달 데이터", message); // 서버 전달 확인 디버깅 로그
 
-	const result = await openai.embeddings.create({
-		model: "text-embedding-3-small",
-		input: message,
-		encoding_format: "float",
-	});
+// 	const result = await openai.embeddings.create({
+// 		model: "text-embedding-3-small",
+// 		input: message,
+// 		encoding_format: "float",
+// 	});
 
-	let respond = { object: message, embedding: result.data[0].embedding };
-	await console.log("임베딩이 완료되었습니다:", respond.object); // 수신 확인 디버깅 로그
-	res.json(result.object);
-});
+// 	let respond = { object: message, embedding: result.data[0].embedding };
+// 	await console.log("임베딩이 완료되었습니다:", respond.object); // 수신 확인 디버깅 로그
+// 	res.json(result.object);
+// });
 
 // 임베딩 테스트
 app.get("/add", async (req, res) => {
-	const userInput = "테스트 2";
+	const userInput = "코끼리";
 	let result = await axios.post(
 		"https://api.openai.com/v1/embeddings",
 		{
@@ -113,6 +113,28 @@ app.get("/add", async (req, res) => {
 	let force = "INSERT INTO items (title, embedding) VALUES($1, $2)";
 	let value = [userInput, pgvector.toSql(result.data.data[0].embedding)];
 	await client.query(force, value);
+	console.log("임베딩 타겟", userInput);
 	console.log(result.data.data[0].embedding);
 	res.send("test");
+});
+
+// 임베딩 비교
+app.get("/compare", async (req, res) => {
+	let result = await axios.post(
+		"https://api.openai.com/v1/embeddings",
+		{
+			input: req.query.q,
+			model: "text-embedding-3-small",
+		},
+		{
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: "Bearer " + process.env.OPENAI_API_KEY,
+			},
+		}
+	);
+	let force = `SELECT id, title, 1 - (embedding <=> $1) as similarity FROM items`;
+	let value = [pgvector.toSql(result.data.data[0].embedding)];
+	let rank = await client.query(force, value);
+	res.send(rank.rows);
 });
