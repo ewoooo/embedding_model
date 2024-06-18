@@ -142,7 +142,7 @@ app.post("/compare", async (req, res) => {
 			},
 		}
 	);
-	let command = `SELECT id, title, 1 - (embedding <=> $1) as similarity FROM items WHERE event = $2`;
+	let command = `SELECT id, title, prompt, 1 - (embedding <=> $1) as similarity FROM items WHERE event = $2`;
 	let value = [pgvector.toSql(result.data.data[0].embedding), targetEvent];
 	let rankList = await client.query(command, value);
 	res.send(rankList.rows);
