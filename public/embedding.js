@@ -56,6 +56,7 @@ async function embeddingQuery(title, prompt, event) {
 				},
 				body: JSON.stringify(requestPayload),
 			});
+			// 정말 많은 일이 있엇어.. 힘들다 진짜
 			const serverData = await response.json(); // 임베딩 데이터 수신
 			console.log("임베딩 결과"); // 로그에 입력
 			console.table(serverData); // 로그에 입력
